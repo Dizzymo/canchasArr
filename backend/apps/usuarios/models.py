@@ -33,15 +33,4 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     def get_full_name(self):
         return f"{self.full_name} - {self.is_active}"
 
-    # groups = models.ManyToManyField(
-    #     Group,
-    #     verbose_name=_('groups'),
-    #     blank=True,
-    #     related_name='user_related_groups'  # Nuevo related_name
-    # )
-    # user_permissions = models.ManyToManyField(
-    #     Permission,
-    #     verbose_name=_('user permissions'),
-    #     blank=True,
-    #     related_name='user_related_permissions'  # Nuevo related_name
-    # )
+     

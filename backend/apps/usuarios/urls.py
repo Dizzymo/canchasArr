@@ -5,6 +5,6 @@ app_name = 'usuarios_app'
 
 urlpatterns = [
     #cliente
-    # path('', views.InicioView.as_view(), name = "inicio"),
+    path('login/', views.LoginView.as_view(), name = "login"),
      
 ]
