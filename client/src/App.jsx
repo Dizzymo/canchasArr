@@ -1,34 +1,22 @@
 
-import './App.css'
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import { UsuariosPage } from "./pages/UsuariosPage";
+import { UsuariosFormPage } from "./pages/UsuariosFormPage";
+import { Navigation } from "./components/Navigation";
 
-function App() {
-  // const [count, setCount] = useState(0)
+function App() { 
 
   return (
-    <div>hola mundo</div>
-    // <>
-    //   <div>
-    //     <a href="https://vitejs.dev" target="_blank">
-    //       <img src={viteLogo} className="logo" alt="Vite logo" />
-    //     </a>
-    //     <a href="https://react.dev" target="_blank">
-    //       <img src={reactLogo} className="logo react" alt="React logo" />
-    //     </a>
-    //   </div>
-    //   <h1>Vite + React</h1>
-    //   <div className="card">
-    //     <button onClick={() => setCount((count) => count + 1)}>
-    //       count is {count}
-    //     </button>
-    //     <p>
-    //       Edit <code>src/App.jsx</code> and save to test HMR
-    //     </p>
-    //   </div>
-    //   <p className="read-the-docs">
-    //     Click on the Vite and React logos to learn more
-    //   </p>
-    // </>
-  )
+      <BrowserRouter>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={< Navigate to="/UsuariosPage" />} />
+          <Route path="/usuarios" element={<UsuariosPage />} />
+          <Route path="/usuarios-create" element={<UsuariosFormPage />} />
+
+        </Routes>
+      </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
