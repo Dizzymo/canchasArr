@@ -9,9 +9,12 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+from datetime import timedelta
 import os
 # from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
+from .custom_hashers import CryptPasswordHasher
+
 import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -60,7 +63,9 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'corsheaders',
     'coreapi',
-
+    'djoser',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 )
 # INSTALLED_APPS = [
 #     'django.contrib.admin',
@@ -148,6 +153,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_HASHERS = [
+    # 'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    # 'backend.custom_hashers.CryptPasswordHasher',  # Reemplaza "tu_app" con el nombre de tu aplicación
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+]
+
 AUTH_USER_MODEL = 'usuarios.User'
 
 # Internationalization
@@ -178,8 +192,45 @@ CORS_ALLOWED_ORIGINS = [
     # "http://localhost:8080",
     # "http://127.0.0.1:9000",
 ]
-
 REST_FRAMEWORK = {
     ...: ...,
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
+
+DJOSER = {
+    
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'SET_USERNAME_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'SET_PASSWORD_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SOCIAL_AUTH_TOKEN_STRATEGY': 'djoser.social.token.jwt.TokenStrategy',
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ['http://localhost:8000/google', 'http://localhost:8000/facebook'],
+    'SERIALIZERS': {
+        'user_create': 'apps.usuarios.serializers.UserCreateSerializer',
+        'user': 'apps.usuarios.serializers.UserCreateSerializer',
+        'current_user': 'apps.usuarios.serializers.UserCreateSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
+    },
+}
+
+EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT', ),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10080),  # Personaliza según tus necesidades
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Personaliza según tus necesidades
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',  # Usa el algoritmo de hash que necesites
+    
+    'SIGNING_KEY': get_secret('SIGNING_KEY'),  # Reemplaza esto con tu clave secreta
+}
+

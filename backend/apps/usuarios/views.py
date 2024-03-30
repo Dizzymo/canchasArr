@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import schemas
+from rest_framework_simplejwt.tokens import RefreshToken
+
 import json
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
@@ -56,9 +58,9 @@ class LoginAPIView(APIView):
 
         # Llamar al procedimiento almacenado para verificar las credenciales del usuario
         with connection.cursor() as cursor:
-            cursor.execute("SELECT public.user_login(%s, %s)", [email, password])
+            cursor.execute("SELECT public.user_loginv2(%s, %s)", [email, password])
             result = cursor.fetchone()
-        
+        print("re: "+result)
         # Verificar el resultado del procedimiento almacenado
         if result[0] == True:
             return Response({'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
@@ -68,47 +70,4 @@ class LoginAPIView(APIView):
             return Response({'error': 'Error en el servidor'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-# from django.shortcuts import render
-# from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from .models import User
-# from django.db import connection
-# import json
-# # Create your views here.
-
-# from django.views.generic import TemplateView 
-
-
-# class LoginView(TemplateView):
-#     template_name = "users/login.html"
-
-
-# # inicio sesion
-# @csrf_exempt
-# def login_view(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         email = data.get('email')
-#         password = data.get('password')
-
-#         # Validar que se proporcionaron credenciales de inicio de sesión
-#         if not email or not password:
-#             return JsonResponse({'error': 'Se requieren email y contraseña'}, status=400)
-
-#         # Llamar al procedimiento almacenado para verificar las credenciales del usuario
-#         with connection.cursor() as cursor:
-#             cursor.execute("SELECT public.user_login(%s, %s)", [email, password])
-#             result = cursor.fetchone()
-#             print(result[0])
-        
-#         # Verificar el resultado del procedimiento almacenado
-#         if result[0] == True:
-#             return JsonResponse({'message': 'Inicio de sesión exitoso'})
-#         elif result[0] == False:
-#             return JsonResponse({'error': 'Credenciales incorrectas'}, status=401)
-#         else:
-#             return JsonResponse({'error': 'Error en el servidor'}, status=500)
-#     else:
-#         return JsonResponse({'error': 'Método no permitido'}, status=405)
-
+ 

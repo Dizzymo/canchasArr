@@ -17,9 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from rest_framework.documentation import include_docs_urls
+from djoser.views import TokenCreateView, TokenDestroyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/token/', TokenCreateView.as_view(), name='token_obtain_pair'),
+    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
     re_path('', include('apps.usuarios.urls')),
     re_path('', include('apps.canchas.urls')),
     path('docs/', include_docs_urls(title="Documentación API")),
